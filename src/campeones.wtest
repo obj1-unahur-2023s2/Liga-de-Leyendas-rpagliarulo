@@ -1,0 +1,77 @@
+import campeones.*
+import items.*
+import minions.*
+
+describe "Hulk sin haber batallado y sin unidad de bloqueo" {
+
+	const hulk= new Campeon(puntosDeVida= 20, puntosDeAtaque= 10, puntosDeDanio=0, items= [new AnilloDeDoran(peso=20), new TomoAmplificador(peso= 1000)])
+
+	test "No participó en ninguna batalla, por lo tanto su acumulado de puntos de daño es 0" {
+
+		assert.equals(0, hulk.puntosDeDanio())
+
+	}
+	
+	test "Este campeón tiene un total de 140 puntos de vida: 20 propios, 
+			más 80 del anillo, más 40 del tomo" {
+
+		assert.equals(140, hulk.puntosDeVida())
+
+	}
+	
+	test "Los puntos de ataque son 40: 10 propios, más 25 del anillo, más 5 del tomo." {
+
+		assert.equals(40, hulk.puntosDeAtaque())
+
+	}
+}
+
+describe "Hulk versus Oleada de minions 1" {
+
+	const hulk= new Campeon(puntosDeVida= 20, puntosDeAtaque= 10, puntosDeDanio=0, items= [new AnilloDeDoran(peso=20), new TomoAmplificador(peso= 1000)])
+	const oleada1= new OleadaDeMinions(minions= 35, plusDeDanio= 5)
+	
+	test "La oleada1 produce 40 unidades de daño" {
+
+		assert.equals(40, oleada1.danioQueProduce())
+
+	}
+	
+	test "Si el campeon1 batalla contra esta oleada de minions, su acumulado de puntos de danio (antes 0) ahora es 40" {
+		
+		hulk.batallarContra(oleada1)
+		assert.equals(40, hulk.puntosDeDanio())
+
+	}
+	
+	test "Ahora su total de puntos de vida pasa a 150, porque ahora el tomo aporta 50: los 40 por el peso más el 25% de los 40 de acumulado de daño, que da 10" {
+		
+		hulk.batallarContra(oleada1)
+		assert.equals(150, hulk.puntosDeVida())
+
+	}
+	
+	test " Los puntos de ataque pasan a 44, porque el tomo ahora aporta 9: 5 por peso más 4 por el 10% de daño acumulado." {
+
+		hulk.batallarContra(oleada1)
+		assert.equals(44, hulk.puntosDeAtaque())
+
+	}
+	
+	test "Supongamos que el campeón se equipa un sombrero de Rabadón de 200 gramos. Este sombrero aporta 40 puntos de vida: 20 por peso, más 20 que suma,
+		 el doble de los 10 que está sumando un tomo. Entonces, el total de puntos de vida del campeón es 190: 20 propios, 80 del anillo, 50 del tomo, 40 del sombrero." {
+		
+		hulk.batallarContra(oleada1)
+		hulk.equipar(new SombreroDeRabadon(peso= 200))
+		assert.equals(190, hulk.puntosDeVida())
+
+	}
+	
+		test "El sombrero de ataque aporta 16: 10 por peso más 6 que son 2 más que los 4 que aporta un tomo. Los puntos de ataque son 60: 10 propios, 25 del anillo, 9 del tomo, 16 del sombrero." {
+		
+		hulk.batallarContra(oleada1)
+		hulk.equipar(new SombreroDeRabadon(peso= 200))
+		assert.equals(60, hulk.puntosDeAtaque())
+
+	}
+}
